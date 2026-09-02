@@ -32,12 +32,21 @@ You can edit or delete any preset in Settings. To hibernate YouTube, enable **â€
 - Synced preferences
 - No collection or transmission of browsing data
 
-## Install
+## Install and update locally
 
 1. Clone the repository or download the latest `tab-hibernator.zip` from the GitHub Release.
-2. Open `chrome://extensions`.
-3. Enable **Developer mode**.
-4. Select **Load unpacked** and choose the repository folder.
+2. Extract it into a permanent folder, for example `C:\Extensions\tab-hibernator`.
+3. Open `chrome://extensions`, enable **Developer mode**, then select **Load unpacked** and choose that folder.
+
+### Update without creating a second extension
+
+Chrome cannot install or update an extension directly from a ZIP.
+
+1. Download the new ZIP and extract its contents **over the same folder** used in step 3 above.
+2. Go to `chrome://extensions`.
+3. On the existing **Tab Hibernator** card, click the reload icon.
+
+Do not use **Load unpacked** on a newly extracted folder: Chrome will treat it as another local extension. To get true automatic Chrome updates, the extension must be published through the Chrome Web Store (or distributed through a managed enterprise update service).
 
 ## Tests
 
