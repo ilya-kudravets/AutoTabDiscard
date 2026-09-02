@@ -1,4 +1,4 @@
-name: Build Chrome extension
+name: Build and release Chrome extension
 
 on:
   push:
@@ -13,8 +13,14 @@ permissions:
 jobs:
   package:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.value }}
     steps:
       - uses: actions/checkout@v4
+
+      - id: version
+        name: Read extension version
+        run: echo "value=$(node -p "require('./manifest.json').version")" >> "$GITHUB_OUTPUT"
 
       - name: Validate manifest
         run: |
@@ -44,3 +50,30 @@ jobs:
           path: dist/tab-hibernator.zip
           if-no-files-found: error
           retention-days: 30
+
+  release:
+    name: Create GitHub Release
+    needs: package
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download package
+        uses: actions/download-artifact@v4
+        with:
+          name: tab-hibernator
+          path: dist
+
+      - name: Create or update versioned release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.package.outputs.version }}
+        run: |
+          tag="v$VERSION"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/tab-hibernator.zip --clobber
+          else
+            gh release create "$tag" dist/tab-hibernator.zip \
+              --title "Tab Hibernator $tag" --generate-notes
+          fi
