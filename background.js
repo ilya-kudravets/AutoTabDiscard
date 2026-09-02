@@ -1,4 +1,18 @@
-const DEFAULTS = { enabled: true, idleMinutes: 5, whitelist: [], urlRules: [], discardPinned: false, discardAudio: false };
+const POPULAR_URL_RULES = [
+  { pattern: "youtube.com", idleMinutes: 1 },
+  { pattern: "netflix.com", idleMinutes: 5 },
+  { pattern: "twitch.tv", idleMinutes: 5 },
+  { pattern: "facebook.com", idleMinutes: 10 },
+  { pattern: "instagram.com", idleMinutes: 10 },
+  { pattern: "x.com", idleMinutes: 10 },
+  { pattern: "web.telegram.org", idleMinutes: 10 },
+  { pattern: "web.whatsapp.com", idleMinutes: 10 },
+  { pattern: "discord.com", idleMinutes: 10 },
+  { pattern: "reddit.com", idleMinutes: 15 },
+  { pattern: "mail.google.com", idleMinutes: 30 },
+  { pattern: "docs.google.com", idleMinutes: 60 }
+];
+const DEFAULTS = { enabled: true, idleMinutes: 5, whitelist: [], urlRules: POPULAR_URL_RULES, discardPinned: false, discardAudio: false };
 let activeTabId;
 
 async function settings() { return { ...DEFAULTS, ...(await chrome.storage.sync.get(DEFAULTS)) }; }
@@ -40,9 +54,11 @@ async function discardEligibleTabs({ manual = false } = {}) {
   await scheduleNextWake();
   return { discarded, skipped };
 }
-chrome.runtime.onInstalled.addListener(async () => {
-  const current = await chrome.storage.sync.get(DEFAULTS);
-  await chrome.storage.sync.set({ ...DEFAULTS, ...current });
+chrome.runtime.onInstalled.addListener(async ({ reason }) => {
+  const stored = await chrome.storage.sync.get();
+  const next = { ...DEFAULTS, ...stored };
+  if (reason === "update" && Array.isArray(stored.urlRules) && stored.urlRules.length === 0) next.urlRules = POPULAR_URL_RULES;
+  await chrome.storage.sync.set(next);
   chrome.contextMenus.create({ id: "discard-tab", title: "Hibernate this tab", contexts: ["page", "action"] });
   chrome.contextMenus.create({ id: "toggle-whitelist", title: "Protect this site from hibernation", contexts: ["page", "action"] });
   scheduleNextWake();
