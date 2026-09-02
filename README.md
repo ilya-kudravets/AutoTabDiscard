@@ -7,12 +7,14 @@ A minimal, fast Chrome extension that hibernates inactive tabs and returns their
 - No scripts are injected into websites.
 - No fixed background polling: Chrome wakes the extension only when the next tab becomes eligible, when you switch tabs, or when settings change.
 - Uses Chrome's native `tabs.discard` API, so discarded pages reload only when you return to them.
-- Default timer: **5 minutes**. Choose **1 minute**, **5 minutes**, or a custom value in Settings.
+- Choose 1, 5, 10, 15, 30, or 60 minutes—or enter a custom value.
+- Assign a separate hibernation time to each URL/domain rule; rules take precedence over the default timer.
 - To hibernate YouTube, enable **“Allow tabs playing audio/video to hibernate”**. Paused video is not specially excluded.
 
 ## Features
 
 - Automatic and manual hibernation
+- Per-domain and URL-prefix lifetime rules
 - Per-domain exclusion list
 - Pinned tabs and audible tabs protected by default
 - Synced preferences
@@ -20,7 +22,7 @@ A minimal, fast Chrome extension that hibernates inactive tabs and returns their
 
 ## Install
 
-1. Clone the repository or download the latest `tab-hibernator.zip` from the GitHub Actions artifact.
+1. Clone the repository or download the latest `tab-hibernator.zip` from the GitHub Release.
 2. Open `chrome://extensions`.
 3. Enable **Developer mode**.
 4. Select **Load unpacked** and choose the repository folder.
