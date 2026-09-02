@@ -9,7 +9,19 @@ A minimal, fast Chrome extension that hibernates inactive tabs and returns their
 - Uses Chrome's native `tabs.discard` API, so discarded pages reload only when you return to them.
 - Choose 1, 5, 10, 15, 30, or 60 minutes—or enter a custom value.
 - Assign a separate hibernation time to each URL/domain rule; rules take precedence over the default timer.
-- To hibernate YouTube, enable **“Allow tabs playing audio/video to hibernate”**. Paused video is not specially excluded.
+
+## Built-in popular presets
+
+| URLs | Hibernation time |
+| --- | ---: |
+| YouTube | 1 min |
+| Netflix, Twitch | 5 min |
+| Facebook, Instagram, X, Telegram Web, WhatsApp Web, Discord | 10 min |
+| Reddit | 15 min |
+| Gmail | 30 min |
+| Google Docs | 60 min |
+
+You can edit or delete any preset in Settings. To hibernate YouTube, enable **“Allow tabs playing audio/video to hibernate”**. Paused video is not specially excluded.
 
 ## Features
 
