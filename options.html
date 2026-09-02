@@ -2,12 +2,12 @@
 <html><head><meta charset="utf-8"><link rel="stylesheet" href="styles.css"></head>
 <body class="options">
   <main><h1>Tab Hibernator settings</h1>
+  <p>Designed for a minimal footprint: it wakes only when a tab is due to hibernate.</p>
   <form id="form">
     <label>Hibernate after <input id="idleMinutes" type="number" min="1" max="1440" required> minutes inactive</label>
     <label><input id="discardPinned" type="checkbox"> Allow pinned tabs to hibernate</label>
     <label><input id="discardAudio" type="checkbox"> Allow tabs playing audio to hibernate</label>
-    <label><input id="protectForms" type="checkbox"> Protect tabs with unsaved form changes</label>
-    <label>Protected sites (one domain or text match per line)<textarea id="whitelist" rows="7" placeholder="mail.google.com&#10;docs.example.com"></textarea></label>
+    <label>Protected domains (one per line)<textarea id="whitelist" rows="7" placeholder="mail.google.com&#10;docs.example.com"></textarea></label>
     <button class="primary">Save settings</button><span id="saved" role="status"></span>
   </form></main><script src="options.js"></script>
 </body></html>
