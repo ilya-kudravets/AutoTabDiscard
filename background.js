@@ -1,32 +1,40 @@
-const DEFAULTS = { enabled: true, idleMinutes: 5, whitelist: [], discardPinned: false, discardAudio: false };
+const DEFAULTS = { enabled: true, idleMinutes: 5, whitelist: [], urlRules: [], discardPinned: false, discardAudio: false };
 let activeTabId;
 
 async function settings() { return { ...DEFAULTS, ...(await chrome.storage.sync.get(DEFAULTS)) }; }
+function matchesUrlRule(url, pattern) {
+  const rule = pattern.trim().toLowerCase();
+  if (!rule) return false;
+  try {
+    const parsed = new URL(url), full = parsed.href.toLowerCase(), host = parsed.hostname.toLowerCase();
+    return rule.includes("://") ? full.startsWith(rule) : host === rule || host.endsWith("." + rule);
+  } catch { return false; }
+}
+function idleMinutesFor(tab, config) {
+  const rule = config.urlRules.find(item => matchesUrlRule(tab.url || "", item.pattern));
+  return rule ? rule.idleMinutes : config.idleMinutes;
+}
 function isProtected(tab, config) {
   if (tab.id === activeTabId || tab.discarded) return true;
   if (!config.discardPinned && tab.pinned) return true;
   if (!config.discardAudio && tab.audible) return true;
-  try {
-    const host = new URL(tab.url).hostname.toLowerCase();
-    return config.whitelist.some(rule => host === rule || host.endsWith("." + rule));
-  } catch { return true; }
+  return config.whitelist.some(rule => matchesUrlRule(tab.url || "", rule));
 }
 async function scheduleNextWake() {
   const config = await settings();
   await chrome.alarms.clear("tab-hibernator");
   if (!config.enabled) return;
-  const tabs = await chrome.tabs.query({});
-  const earliest = tabs.filter(tab => !isProtected(tab, config))
-    .reduce((next, tab) => Math.min(next, (tab.lastAccessed || Date.now()) + config.idleMinutes * 60_000), Infinity);
+  const earliest = (await chrome.tabs.query({})).filter(tab => !isProtected(tab, config))
+    .reduce((next, tab) => Math.min(next, (tab.lastAccessed || Date.now()) + idleMinutesFor(tab, config) * 60_000), Infinity);
   if (Number.isFinite(earliest)) chrome.alarms.create("tab-hibernator", { when: Math.max(Date.now() + 60_000, earliest) });
 }
 async function discardEligibleTabs({ manual = false } = {}) {
-  const config = await settings();
+  const config = await settings(), now = Date.now();
   if (!config.enabled && !manual) return { discarded: 0, skipped: 0 };
-  const cutoff = Date.now() - config.idleMinutes * 60_000;
   let discarded = 0, skipped = 0;
   for (const tab of await chrome.tabs.query({})) {
-    if (isProtected(tab, config) || (!manual && (tab.lastAccessed || 0) > cutoff)) { skipped++; continue; }
+    const expiresAt = (tab.lastAccessed || now) + idleMinutesFor(tab, config) * 60_000;
+    if (isProtected(tab, config) || (!manual && expiresAt > now)) { skipped++; continue; }
     try { await chrome.tabs.discard(tab.id); discarded++; } catch { skipped++; }
   }
   await scheduleNextWake();
