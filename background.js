@@ -1,9 +1,7 @@
-const DEFAULTS = { enabled: true, idleMinutes: 30, whitelist: [], discardPinned: false, discardAudio: false };
+const DEFAULTS = { enabled: true, idleMinutes: 5, whitelist: [], discardPinned: false, discardAudio: false };
 let activeTabId;
 
-async function settings() {
-  return { ...DEFAULTS, ...(await chrome.storage.sync.get(DEFAULTS)) };
-}
+async function settings() { return { ...DEFAULTS, ...(await chrome.storage.sync.get(DEFAULTS)) }; }
 function isProtected(tab, config) {
   if (tab.id === activeTabId || tab.discarded) return true;
   if (!config.discardPinned && tab.pinned) return true;
@@ -18,8 +16,7 @@ async function scheduleNextWake() {
   await chrome.alarms.clear("tab-hibernator");
   if (!config.enabled) return;
   const tabs = await chrome.tabs.query({});
-  const earliest = tabs
-    .filter(tab => !isProtected(tab, config))
+  const earliest = tabs.filter(tab => !isProtected(tab, config))
     .reduce((next, tab) => Math.min(next, (tab.lastAccessed || Date.now()) + config.idleMinutes * 60_000), Infinity);
   if (Number.isFinite(earliest)) chrome.alarms.create("tab-hibernator", { when: Math.max(Date.now() + 60_000, earliest) });
 }
