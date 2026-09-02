@@ -4,10 +4,13 @@
   <main><h1>Tab Hibernator settings</h1>
   <p>It wakes only when a tab is due to hibernate—no background polling.</p>
   <form id="form">
-    <label>Hibernate after
-      <select id="idlePreset"><option value="1">1 minute</option><option value="5" selected>5 minutes</option><option value="custom">Custom</option></select>
-      <input id="idleMinutes" type="number" min="1" max="1440" required aria-label="Custom minutes">
+    <label>Default hibernation time
+      <span class="time-control"><select id="idlePreset"><option value="1">1 minute</option><option value="5">5 minutes</option><option value="10">10 minutes</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="custom">Custom</option></select><input id="idleMinutes" type="number" min="1" max="1440" required aria-label="Custom minutes"><span>minutes</span></span>
     </label>
+    <section><h2>URL lifetime rules</h2><p>First matching rule wins. Enter a domain (for example, <code>youtube.com</code>) or a full URL prefix.</p>
+      <table><thead><tr><th>URL / domain</th><th>Hibernate after</th><th></th></tr></thead><tbody id="ruleRows"></tbody></table>
+      <button id="addRule" type="button">Add URL rule</button>
+    </section>
     <label><input id="discardPinned" type="checkbox"> Allow pinned tabs to hibernate</label>
     <label><input id="discardAudio" type="checkbox"> Allow tabs playing audio/video to hibernate (needed for YouTube)</label>
     <p>Paused YouTube videos are not specially protected. With the option above enabled, the tab will hibernate once the timer expires.</p>
