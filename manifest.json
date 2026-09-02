@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Tab Hibernator",
+  "version": "1.0.0",
+  "description": "Automatically unload inactive tabs to reduce memory use.",
+  "permissions": ["tabs", "storage", "alarms", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js", "type": "module" },
+  "action": { "default_title": "Tab Hibernator", "default_popup": "popup.html" },
+  "options_page": "options.html",
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content.js"],
+    "run_at": "document_start",
+    "all_frames": false
+  }]
+}
