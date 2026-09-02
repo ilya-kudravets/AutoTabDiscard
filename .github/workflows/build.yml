@@ -24,14 +24,18 @@ jobs:
               manifest = json.load(f)
           assert manifest["manifest_version"] == 3
           assert manifest["background"]["service_worker"] == "background.js"
+          assert "content_scripts" not in manifest
           print("Manifest v3 is valid:", manifest["name"], manifest["version"])
           PY
+
+      - name: Run minimal tests
+        run: node --test tests/manifest.test.mjs
 
       - name: Package extension
         run: |
           mkdir -p dist
           zip -r "dist/tab-hibernator.zip" . \
-            -x ".git/*" ".github/*" "dist/*" "content.js"
+            -x ".git/*" ".github/*" "dist/*" "content.js" "tests/*.test.mjs"
 
       - name: Upload installable extension
         uses: actions/upload-artifact@v4
