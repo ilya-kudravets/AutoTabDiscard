@@ -1,0 +1,42 @@
+name: Build Chrome extension
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate manifest
+        run: |
+          python - <<'PY'
+          import json
+          with open("manifest.json", encoding="utf-8") as f:
+              manifest = json.load(f)
+          assert manifest["manifest_version"] == 3
+          assert manifest["background"]["service_worker"] == "background.js"
+          print("Manifest v3 is valid:", manifest["name"], manifest["version"])
+          PY
+
+      - name: Package extension
+        run: |
+          mkdir -p dist
+          zip -r "dist/tab-hibernator.zip" . \
+            -x ".git/*" ".github/*" "dist/*" "content.js"
+
+      - name: Upload installable extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: tab-hibernator
+          path: dist/tab-hibernator.zip
+          if-no-files-found: error
+          retention-days: 30
