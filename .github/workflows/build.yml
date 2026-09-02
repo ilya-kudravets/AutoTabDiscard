@@ -68,12 +68,13 @@ jobs:
       - name: Create or update versioned release
         env:
           GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
           VERSION: ${{ needs.package.outputs.version }}
         run: |
           tag="v$VERSION"
-          if gh release view "$tag" >/dev/null 2>&1; then
-            gh release upload "$tag" dist/tab-hibernator.zip --clobber
+          if gh release view "$tag" --repo "$REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$tag" dist/tab-hibernator.zip --clobber --repo "$REPOSITORY"
           else
-            gh release create "$tag" dist/tab-hibernator.zip \
+            gh release create "$tag" dist/tab-hibernator.zip --repo "$REPOSITORY" \
               --title "Tab Hibernator $tag" --generate-notes
           fi
