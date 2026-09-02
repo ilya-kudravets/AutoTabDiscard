@@ -10,25 +10,25 @@ A minimal, fast Chrome extension that hibernates inactive tabs and returns their
 - Choose 1, 5, 10, 15, 30, or 60 minutes—or enter a custom value.
 - Assign a separate hibernation time to each URL/domain rule; rules take precedence over the default timer.
 
-## Built-in popular presets
+## Built-in rules
 
 | URLs | Hibernation time |
 | --- | ---: |
 | YouTube | 1 min |
 | Netflix, Twitch | 5 min |
-| Facebook, Instagram, X, Telegram Web, WhatsApp Web, Discord | 10 min |
+| Facebook, Instagram, X | 10 min |
 | Reddit | 15 min |
-| Gmail | 30 min |
-| Google Docs | 60 min |
 
-You can edit or delete any preset in Settings. To hibernate YouTube, enable **“Allow tabs playing audio/video to hibernate”**. Paused video is not specially excluded.
+### Protected PWA and communication apps
+
+The following domains are excluded from hibernation by default: Microsoft Teams (all current Teams domains), Slack, WhatsApp Web, Telegram Web, Discord, Gmail, Google Calendar/Meet/Docs/Drive, Notion, Trello, Figma, and Linear. You can edit or remove any exclusion in Settings.
 
 ## Features
 
 - Automatic and manual hibernation
 - Per-domain and URL-prefix lifetime rules
 - Per-domain exclusion list
-- Pinned tabs and audible tabs protected by default
+- Active tabs, pinned tabs, and audible tabs protected by default
 - Synced preferences
 - No collection or transmission of browsing data
 
