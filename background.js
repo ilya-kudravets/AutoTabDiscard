@@ -29,7 +29,8 @@ function idleMinutesFor(tab, config) {
   return rule ? rule.idleMinutes : config.idleMinutes;
 }
 function isProtected(tab, config) {
-  if (tab.id === activeTabId || tab.discarded) return true;
+  // tab.active is read directly from Chrome, so this remains reliable after the service worker restarts.
+  if (tab.active || tab.id === activeTabId || tab.discarded) return true;
   if (!config.discardPinned && tab.pinned) return true;
   if (!config.discardAudio && tab.audible) return true;
   return config.whitelist.some(rule => matchesUrlRule(tab.url || "", rule));
