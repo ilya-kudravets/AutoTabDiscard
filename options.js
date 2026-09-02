@@ -1,7 +1,5 @@
-const defaults = { idleMinutes: 30, whitelist: [], discardPinned: false, discardAudio: false, protectForms: true };
-const form = document.querySelector("#form");
-const saved = document.querySelector("#saved");
-
+const defaults = { idleMinutes: 30, whitelist: [], discardPinned: false, discardAudio: false };
+const form = document.querySelector("#form"), saved = document.querySelector("#saved");
 chrome.storage.sync.get(defaults).then(config => {
   for (const [key, value] of Object.entries(config)) {
     const el = document.querySelector("#" + key);
@@ -11,17 +9,13 @@ chrome.storage.sync.get(defaults).then(config => {
     else el.value = value;
   }
 });
-
 form.addEventListener("submit", async event => {
   event.preventDefault();
-  const idleMinutes = Number(document.querySelector("#idleMinutes").value);
   await chrome.storage.sync.set({
-    idleMinutes,
+    idleMinutes: Number(document.querySelector("#idleMinutes").value),
     discardPinned: document.querySelector("#discardPinned").checked,
     discardAudio: document.querySelector("#discardAudio").checked,
-    protectForms: document.querySelector("#protectForms").checked,
-    whitelist: document.querySelector("#whitelist").value.split("\n").map(x => x.trim()).filter(Boolean)
+    whitelist: document.querySelector("#whitelist").value.split("\n").map(x => x.trim().toLowerCase()).filter(Boolean)
   });
-  saved.textContent = "Saved.";
-  setTimeout(() => saved.textContent = "", 1800);
+  saved.textContent = "Saved."; setTimeout(() => saved.textContent = "", 1800);
 });
