@@ -1,13 +1,16 @@
 :root { color-scheme: light dark; font: 14px system-ui, sans-serif; }
 body { margin: 0; color: CanvasText; background: Canvas; }
 .popup { width: 300px; padding: 16px; }
-.options main { max-width: 640px; padding: 40px; margin: auto; }
+.options main { max-width: 720px; padding: 40px; margin: auto; }
 header { display: flex; justify-content: space-between; align-items: center; }
-h1 { font-size: 20px; margin: 0 0 16px; }
+h1 { font-size: 20px; margin: 0 0 16px; } h2 { font-size: 16px; margin: 26px 0 6px; }
 button { border: 0; border-radius: 8px; padding: 9px 12px; cursor: pointer; font: inherit; }
 .primary { width: 100%; background: #2563eb; color: white; font-weight: 600; }
 .switch-row, form label { display: flex; gap: 10px; align-items: center; margin: 14px 0; }
 form label { align-items: flex-start; flex-direction: column; }
-input[type=number], textarea { width: 100%; box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #94a3b8; font: inherit; }
-#summary, #result, #saved { color: #64748b; line-height: 1.4; }
+input[type=number], input[type=text], textarea, select { box-sizing: border-box; padding: 8px; border-radius: 6px; border: 1px solid #94a3b8; font: inherit; }
+input[type=number], textarea { width: 100%; }
+.time-control { display: flex; align-items: center; gap: 8px; } .time-control input { width: 90px; }
+table { width: 100%; border-collapse: collapse; margin: 10px 0; } th, td { padding: 6px; text-align: left; border-bottom: 1px solid #94a3b8; } td:first-child { width: 65%; } .rule-pattern { width: 100%; } .rule-minutes { width: 72px; } .remove-rule { color: #dc2626; background: transparent; font-size: 20px; padding: 2px 8px; }
+#summary, #result, #saved, .options p { color: #64748b; line-height: 1.4; }
 .options .primary { width: auto; }
